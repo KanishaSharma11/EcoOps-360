@@ -1464,7 +1464,7 @@ const db = getFirestore(app);
 
   
 // 🧮 Fetch and update DOM with live Firestore data
-async function fetchCarbonData() {
+window.fetchCarbonData = async function() {
   const querySnapshot = await getDocs(collection(db, "carbon-regions"));
   querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
@@ -1487,7 +1487,7 @@ async function fetchCarbonData() {
 }
 
 // 🌱 Find and display the greenest (lowest carbon) region
-async function updateRegion() {
+window.updateRegion = async function() {
   const querySnapshot = await getDocs(collection(db, "carbon-regions"));
   const regions = [];
 
