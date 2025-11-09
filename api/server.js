@@ -2,7 +2,7 @@
 
 const express = require("express");
 const cors = require("cors");
-const updateCarbonData = require("../updateCarbonData"); // adjust path if needed
+const updateCarbonData = require("./updateCarbonData"); // adjust path if needed
 
 const app = express();
 
