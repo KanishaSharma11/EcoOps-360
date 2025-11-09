@@ -4,7 +4,10 @@ import cors from "cors";
 const app = express();
 app.use(cors());
 
-app.get("/api/firebase-config", (req, res) => {
+// FIX APPLIED: Changed the route from "/api/firebase-config" to "/"
+// When Vercel routes the request for "/api/firebase-config" to this function,
+// the path seen by Express is just "/" (the root of the function).
+app.get("/", (req, res) => {
   res.json({
     apiKey: process.env.VITE_FIREBASE_API_KEY,
     authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
