@@ -6,7 +6,7 @@ import fetch from "node-fetch";
 const app = express();
 app.use(cors({ origin: "*", methods: ["GET", "POST"], allowedHeaders: ["Content-Type"] }));
 app.use(bodyParser.json());
-
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 app.post("/api/gemini", async (req, res) => {
   try {
     const { message, history } = req.body;
