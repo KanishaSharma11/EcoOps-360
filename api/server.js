@@ -1,7 +1,7 @@
-// ✅ api/server.js — Express for Vercel (CommonJS)
-
+// ✅ api/server.js — Express + Vercel (CommonJS)
 const express = require("express");
 const cors = require("cors");
+const serverless = require("serverless-http");
 const updateCarbonData = require("./updateCarbonData");
 
 const app = express();
@@ -17,22 +17,24 @@ app.use(
 
 // ✅ Health check route
 app.get("/", (req, res) => {
-  res.json({ message: "EcoOps 360 Carbon API is running 🚀" });
+  console.log("✅ Health check called");
+  res.status(200).json({ message: "EcoOps 360 Carbon API is running 🚀" });
 });
 
-// ✅ Update carbon data route
+// ✅ Route to trigger carbon data update
 app.get("/api/update-carbon", async (req, res) => {
   try {
     console.log("🔄 Updating carbon data...");
     await updateCarbonData();
     console.log("✅ Carbon data updated successfully");
-    res.json({ message: "Carbon data updated successfully" });
+    res.status(200).json({ message: "Carbon data updated successfully" });
   } catch (error) {
     console.error("❌ Error updating carbon data:", error);
-    res.status(500).json({ error: "Failed to update carbon data" });
+    res
+      .status(500)
+      .json({ error: error.message || "Failed to update carbon data" });
   }
 });
 
-// ✅ Convert Express app into a handler Vercel understands
-const serverless = require("serverless-http");
+// ✅ Export as serverless handler for Vercel
 module.exports = serverless(app);
