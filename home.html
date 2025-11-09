@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoOps 360 | Smart Green Deployments</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f1419;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #1e2d3d 100%);
+      overflow: hidden;
+    }
+
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1.0;
+      filter: brightness(0.6);
+    }
+
+    /* Parallax Layers */
+    .parallax-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.1s ease-out;
+    }
+
+    .layer-1 {
+      opacity: 0.15;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><radialGradient id="g1"><stop offset="0%" stop-color="%2310b981" stop-opacity="0.3"/><stop offset="100%" stop-color="%2310b981" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="400" r="150" fill="url(%23g1)"/><circle cx="800" cy="200" r="200" fill="url(%23g1)"/><circle cx="1000" cy="600" r="180" fill="url(%23g1)"/></svg>');
+    }
+
+    .layer-2 {
+      opacity: 0.1;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><radialGradient id="g2"><stop offset="0%" stop-color="%232dd4bf" stop-opacity="0.4"/><stop offset="100%" stop-color="%232dd4bf" stop-opacity="0"/></radialGradient></defs><circle cx="600" cy="300" r="250" fill="url(%23g2)"/><circle cx="300" cy="600" r="180" fill="url(%23g2)"/><circle cx="900" cy="500" r="220" fill="url(%23g2)"/></svg>');
+    }
+
+    .grid-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, -50px) scale(1.1); }
+      66% { transform: translate(-50px, 100px) scale(0.9); }
+    }
+
+    /* Eco Globe Animation */
+    .eco-globe {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      opacity: 0.06;
+      animation: rotateGlobe 60s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateGlobe {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Navbar */
+    header {
+      background: blur( rgba(15, 20, 25, 0.6) );
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(94, 234, 212, 0.08);
+    }
+
+    nav {
+      max-width: 1400px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      height: 4rem;
+      width: auto;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+    /* Dashboard Button - Professional Teal Theme */
+.dashboard-btn {
+  background: linear-gradient(135deg, rgba(94, 234, 212, 0.15), rgba(45, 212, 191, 0.15));
+  color: #5eead4;
+  border: 2px solid rgba(94, 234, 212, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.dashboard-btn:hover::before {
+  left: 100%;
+}
+
+.dashboard-btn:hover {
+  background: linear-gradient(135deg, #5eead4, #2dd4bf);
+  color: #0f1419;
+  border-color: #5eead4;
+  box-shadow: 0 8px 25px rgba(94, 234, 212, 0.35), 
+              0 0 0 4px rgba(94, 234, 212, 0.1);
+  transform: translateY(-2px);
+}
+
+.dashboard-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(94, 234, 212, 0.25);
+}
+
+/* Logout Button - Professional Red Theme */
+.logout-btn {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+  color: #ef4444;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.logout-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.logout-btn:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-color: #ef4444;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 
+              0 0 0 4px rgba(239, 68, 68, 0.1);
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Icon styling for better visual hierarchy */
+.nav-btn:hover {
+  letter-spacing: 0.5px;
+}
+
+/* Focus states for accessibility */
+.nav-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.5);
+}
+
+.logout-btn:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5);
+}
+
+/* Loading state (optional - for logout) */
+.logout-btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.logout-btn.loading::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nav-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    gap: 6px;
+  }
+}
+
+    /* Hero Section */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .hero-content h1 {
+      font-size: 3.5rem;
+      color: #e2e8f0;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .quick-deploy-form { 
+      padding: 1.5rem; 
+      margin: 1.5rem 1rem 0; 
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Carbon Metrics Section */
+    .carbon-metrics {
+      padding: 4rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      color: #e2e8f0;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #5eead4, #2dd4bf);
+      border-radius: 2px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .metric-card {
+      background: rgba(26, 35, 50, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(94, 234, 212, 0.08);
+      padding: 2rem;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(94, 234, 212, 0.03), rgba(45, 212, 191, 0.03));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .metric-card:hover::before {
+      opacity: 1;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(94, 234, 212, 0.2);
+      box-shadow: 0 15px 50px rgba(94, 234, 212, 0.15);
+    }
+
+    .metric-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #5eead4;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    .metric-change {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .metric-change.positive {
+      color: #10b981;
+    }
+
+    .metric-change.negative {
+      color: #ef4444;
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: rgba(26, 35, 50, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(94, 234, 212, 0.08);
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Form Styling */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(15, 20, 25, 0.5);
+      border: 1px solid rgba(94, 234, 212, 0.15);
+      border-radius: 10px;
+      color: #e2e8f0;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #5eead4;
+      box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #2dd4bf, #14b8a6);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(45, 212, 191, 0.35);
+    }
+
+    /* Region Selector Widget */
+    .region-widget {
+      background: rgba(26, 35, 50, 0.8);
+      border-radius: 15px;
+      padding: 2rem;
+      border: 1px solid rgba(94, 234, 212, 0.15);
+      text-align: center;
+    }
+
+    .region-widget h3 {
+      color: #5eead4;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .region-display {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 1rem 0;
+    }
+
+    .refresh-btn {
+      padding: 0.6rem 1.5rem;
+      background: rgba(94, 234, 212, 0.1);
+      color: #5eead4;
+      border: 2px solid #5eead4;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .refresh-btn:hover {
+      background: #5eead4;
+      color: #0f1419;
+    }
+
+    /* Deployment Logs */
+    .deployment-logs {
+      background: rgba(15, 20, 25, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid rgba(94, 234, 212, 0.08);
+    }
+
+    .log-entry {
+      padding: 1rem;
+      background: rgba(26, 35, 50, 0.5);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      border-left: 3px solid #5eead4;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .log-entry strong {
+      color: #5eead4;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: rgba(15, 20, 25, 0.5);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #2dd4bf, #14b8a6);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background: rgba(26, 35, 50, 0.6);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid rgba(94, 234, 212, 0.08);
+      margin-top: 2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      nav {
+        padding: 1rem;
+      }
+
+      .nav-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Scrolling Earth Animation */
+    .scrolling-earth {
+      position: fixed;
+      bottom: -200px;
+      left: -200px;
+      width: 400px;
+      height: 400px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.1s ease-out;
+    }
+
+    .earth-sphere {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 30%, #a8d96e 0%, #6cb83f 30%, #2d7a3e 60%, #1a4d2e 100%);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 
+        inset -30px -30px 60px rgba(0, 0, 0, 0.4),
+        inset 20px 20px 40px rgba(255, 255, 255, 0.2),
+        0 20px 60px rgba(16, 185, 129, 0.4);
+      animation: earthRotate 20s linear infinite;
+    }
+
+    /* Tree/Forest Texture Overlay */
+    .earth-sphere::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(168, 217, 110, 0.6) 5%, transparent 5%),
+        radial-gradient(circle at 60% 40%, rgba(108, 184, 63, 0.5) 8%, transparent 8%),
+        radial-gradient(circle at 30% 70%, rgba(45, 122, 62, 0.7) 6%, transparent 6%),
+        radial-gradient(circle at 80% 60%, rgba(168, 217, 110, 0.5) 7%, transparent 7%),
+        radial-gradient(circle at 50% 20%, rgba(108, 184, 63, 0.6) 5%, transparent 5%),
+        radial-gradient(circle at 70% 80%, rgba(45, 122, 62, 0.6) 9%, transparent 9%),
+        radial-gradient(circle at 15% 50%, rgba(168, 217, 110, 0.4) 6%, transparent 6%),
+        radial-gradient(circle at 85% 30%, rgba(108, 184, 63, 0.5) 7%, transparent 7%),
+        radial-gradient(circle at 40% 85%, rgba(45, 122, 62, 0.6) 8%, transparent 8%),
+        radial-gradient(circle at 55% 55%, rgba(26, 77, 46, 0.5) 10%, transparent 10%);
+      animation: forestRotate 25s linear infinite;
+    }
+
+    /* Water/Ocean patches */
+    .earth-sphere::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-image: 
+        radial-gradient(ellipse at 45% 45%, rgba(74, 159, 216, 0.3) 15%, transparent 15%),
+        radial-gradient(ellipse at 70% 25%, rgba(74, 159, 216, 0.25) 12%, transparent 12%),
+        radial-gradient(ellipse at 25% 65%, rgba(74, 159, 216, 0.28) 10%, transparent 10%);
+      animation: waterRotate 30s linear infinite;
+    }
+
+    @keyframes earthRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes forestRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes waterRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Clouds around Earth */
+    .earth-clouds {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.15) 20%, transparent 20%),
+                  radial-gradient(ellipse at 70% 60%, rgba(255, 255, 255, 0.1) 15%, transparent 15%);
+      animation: cloudRotate 15s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes cloudRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 20, 25, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(94, 234, 212, 0.3);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(94, 234, 212, 0.5);
+    }
+
+    /* Chat Button */
+    .chat-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .chat-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .chat-button svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .chat-button.active {
+      transform: rotate(90deg);
+    }
+
+    /* Welcome Bubble */
+    .welcome-bubble {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      max-width: 280px;
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slideIn 0.5s ease forwards;
+      z-index: 999;
+    }
+
+    .welcome-bubble.hidden {
+      display: none;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .welcome-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      right: 20px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid white;
+    }
+
+    .welcome-bubble p {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .welcome-bubble button {
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .welcome-bubble button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Chat Window */
+    .chat-window {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 380px;
+      height: 450px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+      animation: slideUp 0.3s ease;
+    }
+
+    .chat-window.active {
+      display: flex;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .chat-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chat-status {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 24px;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+
+    .close-chat:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8f9fa;
+    }
+
+    .message {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.bot {
+      flex-direction: row;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: #e0e0e0;
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.bot .message-content {
+      background: white;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .message-content {
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .quick-replies {
+      padding: 0 20px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-reply-btn {
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .quick-reply-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .chat-input-container {
+      padding: 16px 20px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 24px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .chat-input:focus {
+      border-color: #667eea;
+    }
+
+    .send-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #10b981 100%);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .send-button:hover {
+      transform: scale(1.1);
+    }
+
+    .send-button svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    .typing-indicator {
+      display: none;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .typing-indicator.active {
+      display: block;
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #667eea;
+      margin: 0 2px;
+      animation: bounce 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .chat-window {
+        width: calc(100vw - 40px);
+        height: calc(100vh - 140px);
+        right: 20px;
+        bottom: 100px;
+      }
+
+      .welcome-bubble {
+        max-width: calc(100vw - 120px);
+        right: 20px;
+      }
+    }
+    
+
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <div class="animated-bg" id="animatedBg">
+
+    <video class="video-background" autoplay muted loop playsinline>
+      <source src="./26070-357512237.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Video Overlay for better readability -->
+    <div class="video-overlay"></div>
+
+    <!-- Parallax Layers -->
+    <div class="parallax-layer layer-1" id="layer1"></div>
+    <div class="parallax-layer layer-2" id="layer2"></div>
+    
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+  </div>
+
+  <!-- Navbar -->
+  <header>
+    <nav>
+      <svg class="logo" viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg" onclick="window.location.reload()">
+        <!-- Cloud shape -->
+        <path d="M 10 45 Q 5 35, 10 28 Q 18 22, 26 24 Q 30 15, 38 15 Q 46 15, 50 24 Q 58 22, 63 32 Q 65 42, 58 48 Z" 
+              fill="#c5d5e0" stroke="none"/>
+        
+        <!-- Circuit pattern inside cloud -->
+        <circle cx="32" cy="28" r="1.2" fill="#4a9fd8"/>
+        <circle cx="40" cy="28" r="1.2" fill="#4a9fd8"/>
+        <circle cx="36" cy="36" r="1.2" fill="#4a9fd8"/>
+        <circle cx="28" cy="36" r="1.2" fill="#4a9fd8"/>
+        <circle cx="44" cy="36" r="1.2" fill="#4a9fd8"/>
+        
+        <line x1="32" y1="28" x2="36" y2="36" stroke="#4a9fd8" stroke-width="0.8"/>
+        <line x1="40" y1="28" x2="36" y2="36" stroke="#4a9fd8" stroke-width="0.8"/>
+        <line x1="36" y1="36" x2="28" y2="36" stroke="#4a9fd8" stroke-width="0.8"/>
+        <line x1="36" y1="36" x2="44" y2="36" stroke="#4a9fd8" stroke-width="0.8"/>
+        
+        <!-- Green leaf/swoosh elements -->
+        <path d="M 38 18 Q 44 13, 50 14 Q 53 16, 54.5 22 Q 55.5 28, 53 33 Q 50 36, 46 37 Q 42 36, 40.5 33 Z" 
+              fill="#a8d96e" opacity="0.9"/>
+        
+        <path d="M 43 24 Q 48 19, 54 22 Q 58 26, 59.5 33 Q 60.5 40, 57 45 Q 53 48, 48 47 Q 43 44, 42.5 40 Z" 
+              fill="#6cb83f" opacity="0.95"/>
+        
+        <path d="M 46 32 Q 51 28, 57 33 Q 61 38, 62 46 Q 62 52, 58 57 Q 53 60, 48 58 Q 43 54, 43 48 Z" 
+              fill="#2d7a3e"/>
+        
+        <!-- Text: EcoOps -->
+        <text x="75" y="50" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#3d9d5c">EcoOps</text>
+        
+        <!-- Text: 360 -->
+        <text x="75" y="68" font-family="Arial, sans-serif" font-size="20" font-weight="300" fill="#8a9ba8">360</text>
+      </svg>
+
+      <div class="nav-right">
+        <a href="./dashboard.html" class="nav-btn dashboard-btn">📊 Dashboard</a>
+        <a href="#chart-metrics" class="nav-btn dashboard-btn">🌍Carbon Metrics</a>
+        <a href="#project" class="nav-btn dashboard-btn">🚀Recommended Region</a>
+        <button class="nav-btn logout-btn" onclick="handleLogout()">🚪 Logout</button>
+      </div>
+    </nav>
+  </header>
+  <!-- Welcome Bubble -->
+  <div class="welcome-bubble" id="welcomeBubble">
+    <p>👋 Hi! I am here to help you.</p>
+    <button onclick="openChat()">Ask EcoOps</button>
+  </div>
+
+  <!-- Chat Button -->
+  <button class="chat-button" id="chatButton" onclick="toggleChat()">
+    <svg viewBox="0 0 24 24" id="chatIcon">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+    </svg>
+    <svg viewBox="0 0 24 24" id="closeIcon" style="display: none;">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <h3>EcoOps Assistant</h3>
+          <div class="chat-status">● Online</div>
+        </div>
+      </div>
+      <button class="close-chat" onclick="toggleChat()">×</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+        <div class="message-avatar">🤖</div>
+        <div class="message-content">
+          Hi there! 👋 I'm your EcoOps assistant. How can I help you today?
+        </div>
+      </div>
+      <div class="typing-indicator" id="typingIndicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="quick-replies">
+      <button class="quick-reply-btn" onclick="sendQuickReply('Tell me about EcoOps')">About EcoOps</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('Pricing information')">Pricing</button>
+      <button class="quick-reply-btn" onclick="sendQuickReply('Contact support')">Support</button>
+    </div>
+
+    <div class="chat-input-container">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleKeyPress(event)" style="color: black">
+      <button class="send-button" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- HERO SECTION WITH QUICK DEPLOY FORM -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>🌱 Smart Green Deployments</h1>
+      <p>Deploy your applications to the greenest regions with AI-powered carbon awareness</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Carbon Metrics Section -->
+  <section class="carbon-metrics" id="chart-metrics">
+    <h2 class="section-title">🌍 Real-Time Carbon Metrics</h2>
+    
+
+    <!-- Carbon Intensity Chart -->
+    <div class="chart-container">
+  <h3 style="color: #5eead4; margin-bottom: 1.5rem; font-size: 1.5rem;">📈 Carbon Intensity by Region</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+
+    <div id="us-central1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">US-Central1</div>
+      <div id="us-central1-status" style="font-size: 1.5rem; color: #10b981; font-weight: 700;">Low</div>
+      <div id="us-central1-carbon" style="font-size: 0.9rem; color: #94a3b8;">45 gCO₂/kWh</div>
+    </div>
+
+    <div id="europe-west1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Europe-West1</div>
+      <div id="europe-west1-status" style="font-size: 1.5rem; color: #eab308; font-weight: 700;">Medium</div>
+      <div id="europe-west1-carbon" style="font-size: 0.9rem; color: #94a3b8;">120 gCO₂/kWh</div>
+    </div>
+
+    <div id="asia-south1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Asia-South1</div>
+      <div id="asia-south1-status" style="font-size: 1.5rem; color: #10b981; font-weight: 700;">Low</div>
+      <div id="asia-south1-carbon" style="font-size: 0.9rem; color: #94a3b8;">58 gCO₂/kWh</div>
+    </div>
+
+    <div id="australia-se1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Australia-SE1</div>
+      <div id="australia-southeast1-status" style="font-size: 1.5rem; color: #ef4444; font-weight: 700;">High</div>
+      <div id="australia-southeast1-carbon" style="font-size: 0.9rem; color: #94a3b8;">280 gCO₂/kWh</div>
+    </div>
+
+    <div id="northamerica-northeast1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">NorthAmerica-Northeast1</div>
+      <div id="northamerica-northeast1-status" style="font-size: 1.5rem; color: #10b981; font-weight: 700;">Low</div>
+      <div id="northamerica-northeast1-carbon" style="font-size: 0.9rem; color: #94a3b8;">30 gCO₂/kWh</div>
+    </div>
+
+    <div id="southamerica-east1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">SouthAmerica-East1</div>
+      <div id="southamerica-east1-status" style="font-size: 1.5rem; color: #eab308; font-weight: 700;">Medium</div>
+      <div id="southamerica-east1-carbon" style="font-size: 0.9rem; color: #94a3b8;">180 gCO₂/kWh</div>
+    </div>
+
+    <div id="africa-south1-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Africa-South1</div>
+      <div id="africa-south1-status" style="font-size: 1.5rem; color: #ef4444; font-weight: 700;">High</div>
+      <div id="africa-south1-carbon" style="font-size: 0.9rem; color: #94a3b8;">410 gCO₂/kWh</div>
+    </div>
+
+    <div id="me-central2-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Me-Central2</div>
+      <div id="me-central2-status" style="font-size: 1.5rem; color: #ef4444; font-weight: 700;">High</div>
+      <div id="me-central2-carbon" style="font-size: 0.9rem; color: #94a3b8;">260 gCO₂/kWh</div>
+    </div>
+
+    <div id="asia-northeast2-card" style="background: rgba(15,20,25,0.5); padding: 1rem; border-radius: 10px;">
+      <div style="color: #94a3b8;">Asia-Northeast2</div>
+      <div id="asia-northeast2-status" style="font-size: 1.5rem; color: #10b981; font-weight: 700;">Low</div>
+      <div id="asia-northeast2-carbon" style="font-size: 0.9rem; color: #94a3b8;">95 gCO₂/kWh</div>
+    </div>
+
+  </div>
+</div>
+
+    </div>
+  </section>
+
+  <!-- Project Deployment Section -->
+  <section id="project" class="carbon-metrics">
+    <h2 class="section-title">🚀 Deploy Your Project On</h2>
+
+    
+
+      <!-- Live Region Widget -->
+      <div class="region-widget">
+        <h3>🌤 Recommended Region</h3>
+        <div class="region-display" id="regionName">US-Central1</div>
+        <p style="color: #94a3b8; font-size: 0.9rem;">Based on real-time carbon intensity</p>
+        <button class="refresh-btn">🔄 Refresh</button>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+          <div style="font-size: 2rem;">🌱</div>
+          <div style="color: #10b981; font-weight: 600; margin-top: 0.5rem;" id="regionStatus">Low Carbon</div>
+          <div style="color: #94a3b8; font-size: 0.85rem;" id="regionCarbon">45 gCO₂/kWh</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: blur; border-top: 1px solid rgba(94, 234, 212, 0.08); padding: 3rem 2rem; text-align: center; margin-top: 5rem;">
+  <!-- Main Footer Content -->
+  <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left; margin-bottom: 2rem;">
+    
+    <!-- Brand Section -->
+    <div>
+      <h3 style="color: #5eead4; font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600;">EcoOps 360</h3>
+      <p style="color: #94a3b8; line-height: 1.6; font-size: 0.9rem;">Transforming waste management with intelligent, sustainable solutions powered by cutting-edge technology.</p>
+      <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <a href="#" style="color: #5eead4; transition: color 0.3s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#5eead4'">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+        </a>
+        <a href="#" style="color: #5eead4; transition: color 0.3s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#5eead4'">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="#" style="color: #5eead4; transition: color 0.3s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#5eead4'">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Quick Links -->
+    <div>
+      <h4 style="color: #cbd5e1; font-size: 1rem; margin-bottom: 1rem; font-weight: 600;">Quick Links</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 0.5rem;"><a href="#features" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Features</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#about" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">About Us</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#pricing" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Pricing</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#contact" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Contact</a></li>
+      </ul>
+    </div>
+    
+    <!-- Resources -->
+    <div>
+      <h4 style="color: #cbd5e1; font-size: 1rem; margin-bottom: 1rem; font-weight: 600;">Resources</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Documentation</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">API Reference</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Support Center</a></li>
+        <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Blog</a></li>
+      </ul>
+    </div>
+    
+    <!-- Contact Info -->
+    <div>
+      <h4 style="color: #cbd5e1; font-size: 1rem; margin-bottom: 1rem; font-weight: 600;">Get in Touch</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          info@ecoops360.com
+        </li>
+        <li style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          +1 (555) 123-4567
+        </li>
+        <li style="color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-top: 2px;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          San Francisco, CA
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Divider -->
+  <div style="border-top: 1px solid rgba(94, 234, 212, 0.08); margin: 2rem 0;"></div>
+  
+  <!-- Bottom Bar -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1200px; margin: 0 auto;">
+    <p style="color: #94a3b8; margin: 0; font-size: 0.9rem;">Built with ❤️ using Google Cloud | © 2025 EcoOps 360. All rights reserved.</p>
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+      <a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Privacy Policy</a>
+      <a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Terms of Service</a>
+      <a href="#" style="color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.3s;" onmouseover="this.style.color='#5eead4'" onmouseout="this.style.color='#94a3b8'">Cookie Policy</a>
+    </div>
+  </div>
+</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+// 🔹 Open chat when clicking on the welcome bubble
+  window.openChat = function () {
+    const welcomeBubble = document.getElementById("welcomeBubble");
+    welcomeBubble.classList.add("hidden");
+    toggleChat();
+  };
+
+  // 🔹 Toggle chat window visibility
+  window.toggleChat = function () {
+    chatOpen = !chatOpen;
+    const chatWindow = document.getElementById("chatWindow");
+    const chatButton = document.getElementById("chatButton");
+    const chatIcon = document.getElementById("chatIcon");
+    const closeIcon = document.getElementById("closeIcon");
+    const welcomeBubble = document.getElementById("welcomeBubble");
+
+    if (!chatWindow || !chatButton) {
+      console.warn("⚠️ Chat elements not found in DOM.");
+      return;
+    }
+
+    chatWindow.classList.toggle("active");
+    chatButton.classList.toggle("active");
+    welcomeBubble.classList.add("hidden");
+
+    if (chatOpen) {
+      chatIcon.style.display = "none";
+      closeIcon.style.display = "block";
+      document.getElementById("chatInput")?.focus();
+    } else {
+      chatIcon.style.display = "block";
+      closeIcon.style.display = "none";
+    }
+  };
+
+  
+// 🧮 Fetch and update DOM with live Firestore data
+async function fetchCarbonData() {
+  const querySnapshot = await getDocs(collection(db, "carbon-regions"));
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const region = docSnap.id.toLowerCase();
+
+    const statusEl = document.getElementById(`${region}-status`);
+    const carbonEl = document.getElementById(`${region}-carbon`);
+
+    if (statusEl && carbonEl) {
+      statusEl.textContent = data.intensityLevel;
+      carbonEl.textContent = `${data.intensityValue} gCO₂/kWh`;
+
+      if (data.intensityLevel === "Low") statusEl.style.color = "#10b981";
+      else if (data.intensityLevel === "Medium") statusEl.style.color = "#eab308";
+      else if (data.intensityLevel === "High") statusEl.style.color = "#ef4444";
+    } else {
+      console.warn(`⚠️ No HTML elements found for region: ${region}`);
+    }
+  });
+}
+
+// 🌱 Find and display the greenest (lowest carbon) region
+async function updateRegion() {
+  const querySnapshot = await getDocs(collection(db, "carbon-regions"));
+  const regions = [];
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    regions.push({
+      name: docSnap.id,
+      carbon: data.intensityValue,
+      status: data.intensityLevel,
+    });
+  });
+
+  if (regions.length === 0) return;
+
+  const greenest = regions.reduce((min, r) => (r.carbon < min.carbon ? r : min));
+
+  const regionNameEl = document.getElementById("regionName");
+  const regionCarbonEl = document.getElementById("regionCarbon");
+  const regionStatusEl = document.getElementById("regionStatus");
+
+  if (regionNameEl) regionNameEl.textContent = greenest.name;
+  if (regionCarbonEl) regionCarbonEl.textContent = `${greenest.carbon} gCO₂/kWh`;
+  if (regionStatusEl) {
+    regionStatusEl.textContent = greenest.status;
+    regionStatusEl.style.color =
+      greenest.status === "Low"
+        ? "#10b981"
+        : greenest.status === "Medium"
+        ? "#eab308"
+        : "#ef4444";
+  }
+
+  console.log("🌍 Greenest Region:", greenest.name, "-", greenest.carbon, "gCO₂/kWh");
+}
+
+
+// 🌎 Smooth scroll
+function scrollToSection(id) {
+  const element = document.getElementById(id);
+  if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// 🚪 Logout
+function handleLogout() {
+  if (confirm("Are you sure you want to logout?")) {
+    alert("Logging out...");
+    window.location.href = "index.html";
+  }
+}
+
+
+ // 🌍 Chat state and memory
+let chatOpen = false;
+let chatHistory = []; // Store previous messages
+
+// 🧱 Backend endpoint (make sure this matches your backend URL)
+const GEMINI_BACKEND_URL = "http://localhost:5050/api/gemini"; // Change if deployed
+
+// 💬 Add message to chat UI
+window.addMessage = function (text, sender) {
+  const container = document.getElementById("chatMessages");
+  const msg = document.createElement("div");
+  msg.className = `message ${sender}`;
+
+  const avatar = document.createElement("div");
+  avatar.className = "message-avatar";
+  avatar.textContent = sender === "bot" ? "🤖" : "👤";
+
+  const content = document.createElement("div");
+  content.className = "message-content";
+  content.textContent = text;
+
+  msg.append(avatar, content);
+  container.insertBefore(msg, document.getElementById("typingIndicator"));
+  scrollToBottom();
+};
+
+// 📜 Scroll chat to bottom
+function scrollToBottom() {
+  const c = document.getElementById("chatMessages");
+  c.scrollTop = c.scrollHeight;
+}
+
+// ✉️ Send message from input box
+window.sendMessage = async function () {
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  addMessage(message, "user");
+  input.value = "";
+  await processGeminiResponse(message);
+};
+
+// 💬 Handle quick replies
+window.sendQuickReply = async function (message) {
+  addMessage(message, "user");
+  await processGeminiResponse(message);
+};
+
+// 🧠 Core: Send user message to Gemini backend and display bot reply
+async function processGeminiResponse(userMessage) {
+  const typingIndicator = document.getElementById("typingIndicator");
+  typingIndicator.classList.add("active");
+
+  // System prompt for Gemini
+  const systemPrompt = `
+You are EcoOps — an AI-powered sustainability companion developed as part of the EcoOps 360 project.
+EcoOps is a smart environmental monitoring and engagement platform that helps users reduce their carbon footprint, 
+track personal and community sustainability metrics, and make eco-friendly lifestyle choices.
+Right now we have 9 regions with live carbon intensity data which gets updated every hour.
+You can find the best region to deploy projects based on lowest carbon intensity.
+Low carbon intensity is under 150 gCO₂/kWh, medium is 150-350 gCO₂/kWh, and high is above 350 gCO₂/kWh.
+
+
+Your role:
+• Understand user questions about sustainability, waste management, renewable energy, carbon emissions, and green practices.
+• Provide actionable, personalized insights based on data and user context.
+• Support users in understanding their impact using the platform’s dashboards, analytics, and carbon tracking features.
+• Be engaging, supportive, and factually accurate — acting as both an assistant and motivator for sustainable living.
+• Keep responses short, friendly, and insightful (2–4 sentences).
+• If asked about EcoOps, briefly explain that it's an AI-driven sustainability platform combining data analytics, 
+  community insights, and eco-intelligence to help people live greener lives.
+
+Example topics you can help with:
+– Carbon emission tracking
+– Recycling and energy conservation tips
+– Climate action initiatives
+– EcoOps dashboard features or usage
+– Local environmental awareness
+
+Always maintain an encouraging and optimistic tone while guiding users toward sustainability.
+`;
+
+
+  try {
+    // 🔗 Send message to backend (which talks to Gemini)
+    const res = await fetch(GEMINI_BACKEND_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: systemPrompt + "\n" + userMessage,
+        history: chatHistory,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Backend connection failed");
+
+    const data = await res.json();
+
+    // Extract Gemini’s reply text
+    const response =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "⚠️ Sorry, I couldn't get a response.";
+
+    // Update chat + memory
+    chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+    chatHistory.push({ role: "model", parts: [{ text: response }] });
+
+    typingIndicator.classList.remove("active");
+    addMessage(response, "bot");
+
+    // Persist chat
+    localStorage.setItem("ecoopsChatHistory", JSON.stringify(chatHistory));
+  } catch (error) {
+    typingIndicator.classList.remove("active");
+    console.error("❌ Gemini API Error:", error);
+    addMessage("⚠️ Sorry, I couldn't connect to Gemini API right now.", "bot");
+  }
+}
+
+// ♻️ Load previous chat on reload
+window.onload = function () {
+  const stored = localStorage.getItem("ecoopsChatHistory");
+  if (stored) {
+    chatHistory = JSON.parse(stored);
+    chatHistory.forEach((msg) => {
+      if (msg.role === "user") addMessage(msg.parts[0].text, "user");
+      else addMessage(msg.parts[0].text, "bot");
+    });
+  }
+};
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = "1";
+        entry.target.style.transform = "translateY(0)";
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.1 }
+);
+// 🔁 Load everything on page load
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetch("http://localhost:5000/update-carbon"); // ✅ Always updates Firestore
+  await fetchCarbonData();
+  await updateRegion();
+
+  const cards = document.querySelectorAll(".metric-card, .glass-card, .chart-container");
+  cards.forEach((card, index) => {
+    card.style.opacity = "0";
+    card.style.transform = "translateY(30px)";
+    card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+    observer.observe(card);
+  });
+});
+
+// Expose global functions
+window.scrollToSection = scrollToSection;
+window.handleLogout = handleLogout;
+window.toggleChat = toggleChat;
+window.sendMessage = sendMessage;
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+
+  window.hideWelcomeBubble = function() {
+    const bubble = document.getElementById('welcomeBubble');
+    // Add the 'hidden' class to trigger the fade-out via CSS transition
+    bubble.classList.add('hidden');
+  }
+    
+  window.onload = function() {
+    setTimeout(hideWelcomeBubble, 5000);
+  };
+
+  
+  </script>
+  </body>
+  </html>
