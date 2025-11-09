@@ -8,7 +8,13 @@
   "routes": [
     { "src": "/api/update-carbon", "dest": "/api/server.js" },
     { "src": "/api/gemini", "dest": "/api/server2.js" },
-    { "src": "api/firebase-config.js", "use": "/api/firebase-config.js" },
+    
+    // 🛠️ FIX APPLIED:
+    // 1. Changed "use" to "dest" to resolve the schema error.
+    // 2. Added leading '/' to "src" for correct routing.
+    // 3. Assumed this config file is served from the root 'api' directory.
+    { "src": "/api/firebase-config.js", "dest": "/api/firebase-config.js" },
+    
     { "src": "/", "dest": "/public/index.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
