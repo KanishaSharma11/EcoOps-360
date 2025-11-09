@@ -543,7 +543,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier: email, continueUri: "http://localhost" }),
+        body: JSON.stringify({ identifier: email, continueUri: "https://eco-ops-360.vercel.app/" }),
       }
     ).then(res => res.json());
 
@@ -660,7 +660,7 @@ document.getElementById('forgotPasswordLink').addEventListener('click', async (e
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier: email, continueUri: "http://localhost" }),
+        body: JSON.stringify({ identifier: email, continueUri: "https://eco-ops-360.vercel.app/" }),
       }
     );
     const data = await response.json();
