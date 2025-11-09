@@ -1,23 +1,37 @@
-// ✅ api/index.js — Node.js (CommonJS) version for Vercel
+// ✅ api/server.js — Node.js (CommonJS) version for Vercel
 
 const express = require("express");
 const cors = require("cors");
-const updateCarbonData = require("./updateCarbonData"); // adjust path if needed
+const updateCarbonData = require("./updateCarbonData"); // Ensure this file exists in /api folder
 
 const app = express();
 
-// ✅ Allow all origins (for local dev only)
-app.use(cors());
+// ✅ Middleware
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
-app.get("/update-carbon", async (req, res) => {
+// ✅ Test route (for checking server health)
+app.get("/", (req, res) => {
+  res.json({ message: "EcoOps 360 Carbon API is running 🚀" });
+});
+
+// ✅ Main route: update carbon data
+app.get("/api/update-carbon", async (req, res) => {
   try {
+    console.log("🔄 Updating carbon data...");
     await updateCarbonData();
+    console.log("✅ Carbon data updated successfully");
     res.json({ message: "Carbon data updated successfully" });
   } catch (error) {
-    console.error("Error updating carbon data:", error);
+    console.error("❌ Error updating carbon data:", error);
     res.status(500).json({ error: "Failed to update carbon data" });
   }
 });
 
-// ✅ Export the Express app (Vercel automatically creates a serverless function)
+// ✅ Export app for Vercel
 module.exports = app;
