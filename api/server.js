@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const serverless = require("serverless-http");
-const updateCarbonData = require("./updateCarbonData");
+const updateCarbonData = require("./updateCarbonData.js");
 
 const app = express();
 
@@ -27,7 +27,7 @@ app.get("/api/update-carbon", async (req, res) => {
   try {
     // Log important environment variables
     console.log("🧩 Checking environment variables...");
-    console.log("ELECTRICITYMAP_API_KEY exists:", !!process.env.ELECTRICITYMAP_API_KEY);
+    console.log("ELECTRICITYMAP_API_KEY exists:", !!process.env.ElectricityAPIKey);
     console.log("FIREBASE_SERVICE_ACCOUNT exists:", !!process.env.FIREBASE_SERVICE_ACCOUNT);
 
     await updateCarbonData();
