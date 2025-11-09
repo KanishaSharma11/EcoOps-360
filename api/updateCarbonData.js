@@ -30,14 +30,13 @@ const regions = {
 
 // ✅ Fetch & Update Carbon Data
 async function updateCarbonData() {
-  const ElectricityAPIKey = process.env.ElectricityAPIKey;
 
   for (const [region, code] of Object.entries(regions)) {
     try {
       const response = await fetch(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
         {
-          headers: { "auth-token": ElectricityAPIKey },
+          headers: { "auth-token": "50nZmfUw4EItQ1F9HUzP" },
         }
       );
 
