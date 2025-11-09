@@ -1,24 +1,10 @@
-// ✅ updateCarbonData.js — fixed CommonJS version for Vercel
-
 const fetch = require("node-fetch");
 const admin = require("firebase-admin");
 
-// ✅ Check Firebase credentials
-if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-  console.error("❌ Missing FIREBASE_SERVICE_ACCOUNT env variable.");
-  throw new Error("FIREBASE_SERVICE_ACCOUNT not set");
-}
+// ✅ Parse Firebase service account
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
 
-// ✅ Parse service account JSON
-let serviceAccount;
-try {
-  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-} catch (err) {
-  console.error("❌ Failed to parse FIREBASE_SERVICE_ACCOUNT:", err);
-  throw err;
-}
-
-// ✅ Initialize Firebase Admin once
+// ✅ Initialize Firebase only once
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -27,7 +13,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// ✅ Define regions
+// ✅ Regions mapping
 const regions = {
   "US-Central1": "US-MIDW-MISO",
   "Europe-West1": "DE",
@@ -37,29 +23,25 @@ const regions = {
   "SouthAmerica-East1": "BR-CS",
   "Africa-South1": "ZA",
   "Me-Central2": "SA",
-  "Asia-Northeast2": "JP-KN",
+  "Asia-Northeast2": "JP-KN"
 };
 
-// ✅ Fetch and update Firestore
 async function updateCarbonData() {
   const ElectricityAPIKey = process.env.ElectricityAPIKey;
 
   if (!ElectricityAPIKey) {
-    console.error("❌ Missing ELECTRICITYMAP_API_KEY env variable");
-    throw new Error("Missing ELECTRICITYMAP_API_KEY");
+    throw new Error("Missing ELECTRICITYMAP_API_KEY in environment variables");
   }
 
   for (const [region, code] of Object.entries(regions)) {
     try {
       const response = await fetch(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
-        {
-          headers: { "auth-token": ElectricityAPIKey },
-        }
+        { headers: { "auth-token": ElectricityAPIKey } }
       );
 
       if (!response.ok) {
-        console.error(`❌ Failed to fetch data for ${region}`);
+        console.error(`❌ Failed to fetch data for ${region}: ${response.status}`);
         continue;
       }
 
@@ -78,8 +60,8 @@ async function updateCarbonData() {
       });
 
       console.log(`✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
-    } catch (error) {
-      console.error(`⚠️ Error updating ${region}:`, error);
+    } catch (err) {
+      console.error(`⚠️ Error updating ${region}:`, err.message);
     }
   }
 }
