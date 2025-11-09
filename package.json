@@ -14,7 +14,6 @@
   "scripts": {
     "start": "node api/server.js"
   },
-  "type" : "common.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
