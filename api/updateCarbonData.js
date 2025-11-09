@@ -3,8 +3,8 @@
 const admin = require("firebase-admin");
 
 // ✅ Dynamic import for node-fetch (since it's ESM)
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const fetch = require("node-fetch");
+
 
 // ✅ Parse Firebase credentials
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
