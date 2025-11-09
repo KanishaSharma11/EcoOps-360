@@ -1,6 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
-  "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.1.0",
@@ -15,6 +14,7 @@
   "scripts": {
     "start": "node api/server.js"
   },
+  "type" : "common.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
