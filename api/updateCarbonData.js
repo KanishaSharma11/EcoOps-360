@@ -33,47 +33,47 @@ const regions = {
 
 // ✅ Fetch and update data in Firestore
 async function updateCarbonData() {
-  const ElectricityAPIKey = process.env.ElectricityAPIKey;
+  try {
+    const ElectricityAPIKey = process.env.ElectricityAPIKey;
+    if (!ElectricityAPIKey) throw new Error("Missing ELECTRICITYMAP_API_KEY");
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT) throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
 
-  if (!ElectricityAPIKey) throw new Error("Missing ELECTRICITYMAP_API_KEY");
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT)
-    throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+    for (const [region, code] of Object.entries(regions)) {
+      try {
+        console.log(`🌍 Fetching data for ${region} (${code})`);
+        const response = await fetch(
+          `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
+          { headers: { "auth-token": ElectricityAPIKey } }
+        );
 
-  for (const [region, code] of Object.entries(regions)) {
-    try {
-      console.log(`🌍 Fetching data for ${region} (${code})`);
+        console.log(`${region} response:`, response.status);
 
-      const response = await fetch(
-        `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
-        {
-          headers: { "auth-token": ElectricityAPIKey },
-        }
-      );
+        if (!response.ok) continue;
+        const data = await response.json();
+        const intensityValue = data.carbonIntensity || 0;
 
-      if (!response.ok) {
-        console.error(`❌ Failed to fetch data for ${region} (${response.status})`);
-        continue;
+        let intensityLevel = "Low";
+        if (intensityValue > 170) intensityLevel = "Medium";
+        if (intensityValue >= 350) intensityLevel = "High";
+
+        await db.collection("carbon-regions").doc(region).set({
+          name: region,
+          intensityValue,
+          intensityLevel,
+          updatedAt: new Date().toISOString(),
+        });
+
+        console.log(`✅ Updated ${region}: ${intensityValue}`);
+      } catch (err) {
+        console.error(`⚠️ Error in ${region}:`, err);
       }
-
-      const data = await response.json();
-      const intensityValue = data.carbonIntensity || 0;
-
-      let intensityLevel = "Low";
-      if (intensityValue > 170) intensityLevel = "Medium";
-      if (intensityValue >= 350) intensityLevel = "High";
-
-      await db.collection("carbon-regions").doc(region).set({
-        name: region,
-        intensityValue,
-        intensityLevel,
-        updatedAt: new Date().toISOString(),
-      });
-
-      console.log(`✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
-    } catch (error) {
-      console.error(`⚠️ Error updating ${region}:`, error);
     }
+    console.log("🏁 Finished all updates");
+  } catch (outerErr) {
+    console.error("🚨 Outer error:", outerErr);
+    throw outerErr;
   }
 }
+
 
 module.exports = updateCarbonData;
