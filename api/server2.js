@@ -33,7 +33,7 @@ app.post("/api/gemini", async (req, res) => {
       return res.status(400).json({ error: "Missing 'message' in request body." });
     }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro:generateContent?key=${GEMINI_API_KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`;
 
     const payload = {
       contents: [
