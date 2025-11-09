@@ -1,19 +1,25 @@
-// ✅ api/updateCarbonData.js — FIXED for Vercel (Node 18+, CommonJS)
-
 const admin = require("firebase-admin");
 
-// ✅ Dynamic import for node-fetch (since it's ESM)
-const fetch = require("node-fetch");
-
+// ✅ Lazy-load node-fetch once, globally
+let fetchFn = null;
+async function getFetch() {
+  if (!fetchFn) {
+    const mod = await import("node-fetch");
+    fetchFn = mod.default;
+  }
+  return fetchFn;
+}
 
 // ✅ Parse Firebase credentials
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
 
-// ✅ Initialize Firebase Admin SDK
+// ✅ Initialize Firebase Admin SDK once
 if (!admin.apps.length) {
+  console.log("🔥 Initializing Firebase Admin...");
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
+  console.log("🔥 Firebase initialized!");
 }
 
 const db = admin.firestore();
@@ -31,49 +37,54 @@ const regions = {
   "Asia-Northeast2": "JP-KN",
 };
 
-// ✅ Fetch and update data in Firestore
+// ✅ Main update function
 async function updateCarbonData() {
-  try {
-    const ElectricityAPIKey = process.env.ElectricityAPIKey;
-    if (!ElectricityAPIKey) throw new Error("Missing ELECTRICITYMAP_API_KEY");
-    if (!process.env.FIREBASE_SERVICE_ACCOUNT) throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+  console.log("⚙️ Starting updateCarbonData...");
 
-    for (const [region, code] of Object.entries(regions)) {
-      try {
-        console.log(`🌍 Fetching data for ${region} (${code})`);
-        const response = await fetch(
-          `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
-          { headers: { "auth-token": ElectricityAPIKey } }
-        );
+  const ElectricityAPIKey = process.env.ElectricityAPIKey;
+  if (!ElectricityAPIKey) throw new Error("Missing ElectricityAPIKey");
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT)
+    throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
 
-        console.log(`${region} response:`, response.status);
+  const fetch = await getFetch();
 
-        if (!response.ok) continue;
-        const data = await response.json();
-        const intensityValue = data.carbonIntensity || 0;
+  for (const [region, code] of Object.entries(regions)) {
+    try {
+      console.log(`🌍 Fetching data for ${region} (${code})`);
 
-        let intensityLevel = "Low";
-        if (intensityValue > 170) intensityLevel = "Medium";
-        if (intensityValue >= 350) intensityLevel = "High";
+      const response = await fetch(
+        `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
+        { headers: { "auth-token": ElectricityAPIKey } }
+      );
 
-        await db.collection("carbon-regions").doc(region).set({
-          name: region,
-          intensityValue,
-          intensityLevel,
-          updatedAt: new Date().toISOString(),
-        });
+      console.log(`${region} → Response status: ${response.status}`);
 
-        console.log(`✅ Updated ${region}: ${intensityValue}`);
-      } catch (err) {
-        console.error(`⚠️ Error in ${region}:`, err);
+      if (!response.ok) {
+        console.error(`❌ Failed for ${region} (${response.status})`);
+        continue;
       }
-    }
-    console.log("🏁 Finished all updates");
-  } catch (outerErr) {
-    console.error("🚨 Outer error:", outerErr);
-    throw outerErr;
-  }
-}
 
+      const data = await response.json();
+      const intensityValue = data.carbonIntensity || 0;
+
+      let intensityLevel = "Low";
+      if (intensityValue > 170) intensityLevel = "Medium";
+      if (intensityValue >= 350) intensityLevel = "High";
+
+      await db.collection("carbon-regions").doc(region).set({
+        name: region,
+        intensityValue,
+        intensityLevel,
+        updatedAt: new Date().toISOString(),
+      });
+
+      console.log(`✅ ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
+    } catch (error) {
+      console.error(`⚠️ Error updating ${region}:`, error.message);
+    }
+  }
+
+  console.log("🏁 Finished all regions update");
+}
 
 module.exports = updateCarbonData;
