@@ -35,14 +35,14 @@ async function updateCarbonData() {
   for (const [region, code] of Object.entries(regions)) {
     try {
       const response = await fetch(
-        https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code},
+        `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
         {
           headers: { "auth-token": ElectricityAPIKey },
         }
       );
 
       if (!response.ok) {
-        console.error(❌ Failed to fetch data for ${region});
+        console.error(`❌ Failed to fetch data for ${region}`);
         continue;
       }
 
@@ -60,9 +60,9 @@ async function updateCarbonData() {
         updatedAt: new Date().toISOString(),
       });
 
-      console.log(✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel}));
+      console.log(`✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
     } catch (error) {
-      console.error(⚠ Error updating ${region}:, error);
+      console.error(`⚠ Error updating ${region}:, error`);
     }
   }
 }
