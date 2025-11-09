@@ -1,6 +1,8 @@
-import express from "express";
-import cors from "cors";
-import  updateCarbonData  from "./updateCarbonData.js";
+// ✅ api/index.js — Node.js (CommonJS) version for Vercel
+
+const express = require("express");
+const cors = require("cors");
+const updateCarbonData = require("../updateCarbonData"); // adjust path if needed
 
 const app = express();
 
@@ -17,4 +19,5 @@ app.get("/update-carbon", async (req, res) => {
   }
 });
 
-export default app;
+// ✅ Export the Express app (Vercel automatically creates a serverless function)
+module.exports = app;
