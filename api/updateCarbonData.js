@@ -30,7 +30,7 @@ const regions = {
 
 // ✅ Fetch & Update Carbon Data
 async function updateCarbonData() {
-  const ElectricityAPIKey = process.env.ELECTRICITYMAP_API_KEY;
+  const ElectricityAPIKey = process.env.ElectricityAPIKey;
 
   for (const [region, code] of Object.entries(regions)) {
     try {
