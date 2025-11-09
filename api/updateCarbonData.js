@@ -1,12 +1,24 @@
-// ✅ updateCarbonData.js — CommonJS version (for Vercel-compatible Express backend)
+// ✅ updateCarbonData.js — fixed CommonJS version for Vercel
 
 const fetch = require("node-fetch");
 const admin = require("firebase-admin");
 
-// ✅ Parse the JSON string from environment variable
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+// ✅ Check Firebase credentials
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  console.error("❌ Missing FIREBASE_SERVICE_ACCOUNT env variable.");
+  throw new Error("FIREBASE_SERVICE_ACCOUNT not set");
+}
 
-// ✅ Initialize Firebase Admin SDK once
+// ✅ Parse service account JSON
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} catch (err) {
+  console.error("❌ Failed to parse FIREBASE_SERVICE_ACCOUNT:", err);
+  throw err;
+}
+
+// ✅ Initialize Firebase Admin once
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -15,28 +27,34 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// ✅ Define Region Mappings
+// ✅ Define regions
 const regions = {
-  "US-Central1": "US-MIDW-MISO",      // Midcontinent ISO (U.S. central)
-  "Europe-West1": "DE",               // Germany
-  "Asia-South1": "IN-WE",             // Western India
-  "Australia-SE1": "AU-NSW",          // New South Wales, Australia
-  "NorthAmerica-Northeast1": "CA-QC", // Quebec, Canada
-  "SouthAmerica-East1": "BR-CS",      // Brazil
-  "Africa-South1": "ZA",              // South Africa
-  "Me-Central2": "SA",                // Saudi Arabia
-  "Asia-Northeast2": "JP-KN"          // Japan
+  "US-Central1": "US-MIDW-MISO",
+  "Europe-West1": "DE",
+  "Asia-South1": "IN-WE",
+  "Australia-SE1": "AU-NSW",
+  "NorthAmerica-Northeast1": "CA-QC",
+  "SouthAmerica-East1": "BR-CS",
+  "Africa-South1": "ZA",
+  "Me-Central2": "SA",
+  "Asia-Northeast2": "JP-KN",
 };
 
-// ✅ Fetch & Update Carbon Data
+// ✅ Fetch and update Firestore
 async function updateCarbonData() {
+  const ElectricityAPIKey = process.env.ElectricityAPIKey;
+
+  if (!ElectricityAPIKey) {
+    console.error("❌ Missing ELECTRICITYMAP_API_KEY env variable");
+    throw new Error("Missing ELECTRICITYMAP_API_KEY");
+  }
 
   for (const [region, code] of Object.entries(regions)) {
     try {
       const response = await fetch(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
         {
-          headers: { "auth-token": "50nZmfUw4EItQ1F9HUzP" },
+          headers: { "auth-token": ElectricityAPIKey },
         }
       );
 
@@ -61,7 +79,7 @@ async function updateCarbonData() {
 
       console.log(`✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
     } catch (error) {
-      console.error(`⚠ Error updating ${region}:, error`);
+      console.error(`⚠️ Error updating ${region}:`, error);
     }
   }
 }
