@@ -1551,7 +1551,7 @@ let chatOpen = false;
 let chatHistory = []; // Store previous messages
 
 // 🧱 Backend endpoint (make sure this matches your backend URL)
-const GEMINI_BACKEND_URL = "http://localhost:5050/api/gemini"; // Change if deployed
+const GEMINI_BACKEND_URL = "/api/gemini"; // Change if deployed
 
 // 💬 Add message to chat UI
 window.addMessage = function (text, sender) {
@@ -1692,7 +1692,7 @@ const observer = new IntersectionObserver(
 );
 // 🔁 Load everything on page load
 document.addEventListener("DOMContentLoaded", async () => {
-  await fetch("http://localhost:5000/update-carbon"); // ✅ Always updates Firestore
+  await fetch("/api/update-carbon"); // ✅ Always updates Firestore
   await fetchCarbonData();
   await updateRegion();
 
