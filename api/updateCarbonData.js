@@ -1,28 +1,9 @@
 const admin = require("firebase-admin");
 
-// ✅ Lazy-load node-fetch once, globally
-let fetchFn = null;
 async function getFetch() {
-  if (!fetchFn) {
-    const mod = await import("node-fetch");
-    fetchFn = mod.default;
-  }
-  return fetchFn;
+  const mod = await import("node-fetch");
+  return mod.default;
 }
-
-// ✅ Parse Firebase credentials
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
-
-// ✅ Initialize Firebase Admin SDK once
-if (!admin.apps.length) {
-  console.log("🔥 Initializing Firebase Admin...");
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-  console.log("🔥 Firebase initialized!");
-}
-
-const db = admin.firestore();
 
 // ✅ Region mapping
 const regions = {
@@ -37,54 +18,78 @@ const regions = {
   "Asia-Northeast2": "JP-KN",
 };
 
-// ✅ Main update function
 async function updateCarbonData() {
-  console.log("⚙️ Starting updateCarbonData...");
+  console.log("🪴 [1] updateCarbonData() started");
 
   const ElectricityAPIKey = process.env.ElectricityAPIKey;
-  if (!ElectricityAPIKey) throw new Error("Missing ElectricityAPIKey");
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT)
-    throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+  const firebaseCreds = process.env.FIREBASE_SERVICE_ACCOUNT;
 
+  console.log("🪴 [2] Checking environment vars");
+  console.log("ElectricityAPIKey exists:", !!ElectricityAPIKey);
+  console.log("Firebase creds exist:", !!firebaseCreds);
+
+  if (!ElectricityAPIKey) throw new Error("Missing ElectricityAPIKey");
+  if (!firebaseCreds) throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+
+  console.log("🪴 [3] Parsing Firebase creds");
+  let serviceAccount;
+  try {
+    serviceAccount = JSON.parse(firebaseCreds);
+  } catch (e) {
+    console.error("❌ Failed to parse Firebase creds:", e.message);
+    throw e;
+  }
+
+  console.log("🪴 [4] Initializing Firebase");
+  if (!admin.apps.length) {
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    console.log("🔥 Firebase initialized");
+  }
+
+  const db = admin.firestore();
+
+  console.log("🪴 [5] Importing fetch");
   const fetch = await getFetch();
+  console.log("🪴 [6] Fetch ready");
+
+  // Timeout helper
+  const fetchWithTimeout = (url, options, timeoutMs = 10000) =>
+    Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Fetch timeout")), timeoutMs)
+      ),
+    ]);
 
   for (const [region, code] of Object.entries(regions)) {
     try {
-      console.log(`🌍 Fetching data for ${region} (${code})`);
-
-      const response = await fetch(
+      console.log(`🪴 [7] Fetching ${region} (${code})`);
+      const res = await fetchWithTimeout(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
         { headers: { "auth-token": ElectricityAPIKey } }
       );
+      console.log(`[8] ${region} status:`, res.status);
 
-      console.log(`${region} → Response status: ${response.status}`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      console.log(`[9] ${region} data:`, data);
 
-      if (!response.ok) {
-        console.error(`❌ Failed for ${region} (${response.status})`);
-        continue;
-      }
-
-      const data = await response.json();
-      const intensityValue = data.carbonIntensity || 0;
-
-      let intensityLevel = "Low";
-      if (intensityValue > 170) intensityLevel = "Medium";
-      if (intensityValue >= 350) intensityLevel = "High";
+      const intensity = data.carbonIntensity || 0;
+      const level = intensity >= 350 ? "High" : intensity > 170 ? "Medium" : "Low";
 
       await db.collection("carbon-regions").doc(region).set({
         name: region,
-        intensityValue,
-        intensityLevel,
+        intensityValue: intensity,
+        intensityLevel: level,
         updatedAt: new Date().toISOString(),
       });
-
-      console.log(`✅ ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
-    } catch (error) {
-      console.error(`⚠️ Error updating ${region}:`, error.message);
+      console.log(`✅ [10] Updated ${region}: ${intensity} (${level})`);
+    } catch (err) {
+      console.error(`⚠️ [ERR] ${region}:`, err.message);
     }
   }
 
-  console.log("🏁 Finished all regions update");
+  console.log("🏁 [11] Finished all regions");
 }
 
 module.exports = updateCarbonData;
