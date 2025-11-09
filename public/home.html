@@ -1544,7 +1544,7 @@ let chatOpen = false;
 let chatHistory = []; // Store previous messages
 
 // 🧱 Backend endpoint (make sure this matches your backend URL)
-const GEMINI_BACKEND_URL = "https://eco-ops-360.vercel.app/api/gemini"; // Change if deployed
+const GEMINI_BACKEND_URL = "/api/gemini"; // Change if deployed
 
 // 💬 Add message to chat UI
 window.addMessage = function (text, sender) {
@@ -1589,7 +1589,7 @@ window.sendQuickReply = async function (message) {
 };
 
 // 🧠 Core: Send user message to Gemini backend and display bot reply
-async function processGeminiResponse(userMessage) {
+window.processGeminiResponse = async function(userMessage) {
   const typingIndicator = document.getElementById("typingIndicator");
   typingIndicator.classList.add("active");
 
