@@ -1,4 +1,4 @@
-// ✅ api/server.js — Express + Vercel (CommonJS)
+// ✅ api/server.js — Debug version for Vercel
 const express = require("express");
 const cors = require("cors");
 const serverless = require("serverless-http");
@@ -6,7 +6,6 @@ const updateCarbonData = require("./updateCarbonData");
 
 const app = express();
 
-// ✅ Middleware
 app.use(
   cors({
     origin: "*",
@@ -15,26 +14,36 @@ app.use(
   })
 );
 
-// ✅ Health check route
+// ✅ Health check
 app.get("/", (req, res) => {
-  console.log("✅ Health check called");
+  console.log("✅ Health check route hit");
   res.status(200).json({ message: "EcoOps 360 Carbon API is running 🚀" });
 });
 
-// ✅ Route to trigger carbon data update
+// ✅ Main update route
 app.get("/api/update-carbon", async (req, res) => {
+  console.log("⚙️ /api/update-carbon endpoint called");
+
   try {
-    console.log("🔄 Updating carbon data...");
+    // Log important environment variables
+    console.log("🧩 Checking environment variables...");
+    console.log("ELECTRICITYMAP_API_KEY exists:", !!process.env.ELECTRICITYMAP_API_KEY);
+    console.log("FIREBASE_SERVICE_ACCOUNT exists:", !!process.env.FIREBASE_SERVICE_ACCOUNT);
+
     await updateCarbonData();
+
     console.log("✅ Carbon data updated successfully");
     res.status(200).json({ message: "Carbon data updated successfully" });
   } catch (error) {
-    console.error("❌ Error updating carbon data:", error);
-    res
-      .status(500)
-      .json({ error: error.message || "Failed to update carbon data" });
+    console.error("❌ Server crashed inside update-carbon route:");
+    console.error(error);
+
+    res.status(500).json({
+      error: "Failed to update carbon data",
+      details: error.message || error.toString(),
+    });
   }
 });
 
-// ✅ Export as serverless handler for Vercel
+// ✅ Export for Vercel
 module.exports = serverless(app);
