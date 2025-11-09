@@ -15,9 +15,6 @@
   "scripts": {
     "start": "node api/server.js"
   },
-  "engines": {
-    "node": ">=18"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
