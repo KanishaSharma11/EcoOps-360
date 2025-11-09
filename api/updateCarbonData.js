@@ -1,19 +1,37 @@
-const fetch = require("node-fetch");
+// ✅ api/updateCarbonData.js — fixed for node-fetch ESM issue
 const admin = require("firebase-admin");
 
-// ✅ Parse Firebase service account
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
-
-// ✅ Initialize Firebase only once
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
+async function fetchJSON(url, options) {
+  const fetch = (await import("node-fetch")).default;
+  return fetch(url, options);
 }
 
-const db = admin.firestore();
+console.log("🪶 updateCarbonData.js loaded");
 
-// ✅ Regions mapping
+let serviceAccount = null;
+
+try {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+    console.error("❌ FIREBASE_SERVICE_ACCOUNT is missing!");
+  } else {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    console.log("✅ Parsed FIREBASE_SERVICE_ACCOUNT");
+  }
+} catch (e) {
+  console.error("❌ Failed to parse FIREBASE_SERVICE_ACCOUNT JSON:", e.message);
+}
+
+if (!admin.apps.length && serviceAccount) {
+  try {
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    console.log("✅ Firebase initialized");
+  } catch (err) {
+    console.error("❌ Firebase init failed:", err.message);
+  }
+}
+
+const db = admin.apps.length ? admin.firestore() : null;
+
 const regions = {
   "US-Central1": "US-MIDW-MISO",
   "Europe-West1": "DE",
@@ -23,31 +41,31 @@ const regions = {
   "SouthAmerica-East1": "BR-CS",
   "Africa-South1": "ZA",
   "Me-Central2": "SA",
-  "Asia-Northeast2": "JP-KN"
+  "Asia-Northeast2": "JP-KN",
 };
 
 async function updateCarbonData() {
-  const ElectricityAPIKey = process.env.ElectricityAPIKey;
+  console.log("🚦 Entered updateCarbonData()");
 
-  if (!ElectricityAPIKey) {
-    throw new Error("Missing ELECTRICITYMAP_API_KEY in environment variables");
-  }
+  const ElectricityAPIKey = process.env.ElectricityAPIKey;
+  if (!ElectricityAPIKey) throw new Error("Missing ELECTRICITYMAP_API_KEY in environment");
+  if (!db) throw new Error("Firestore DB not initialized");
 
   for (const [region, code] of Object.entries(regions)) {
+    console.log(`🌍 Fetching data for ${region} (${code})...`);
     try {
-      const response = await fetch(
+      const response = await fetchJSON(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
         { headers: { "auth-token": ElectricityAPIKey } }
       );
 
       if (!response.ok) {
-        console.error(`❌ Failed to fetch data for ${region}: ${response.status}`);
+        console.error(`❌ Failed ${region}: ${response.status} ${response.statusText}`);
         continue;
       }
 
       const data = await response.json();
       const intensityValue = data.carbonIntensity || 0;
-
       let intensityLevel = "Low";
       if (intensityValue > 170) intensityLevel = "Medium";
       if (intensityValue >= 350) intensityLevel = "High";
@@ -59,11 +77,13 @@ async function updateCarbonData() {
         updatedAt: new Date().toISOString(),
       });
 
-      console.log(`✅ Updated ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
+      console.log(`✅ Stored ${region}: ${intensityValue} gCO₂/kWh (${intensityLevel})`);
     } catch (err) {
-      console.error(`⚠️ Error updating ${region}:`, err.message);
+      console.error(`⚠️ Error processing ${region}:`, err.message);
     }
   }
+
+  console.log("🏁 Finished all regions");
 }
 
 module.exports = updateCarbonData;
