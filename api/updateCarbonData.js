@@ -2,7 +2,19 @@
 import fetch from "node-fetch";
 import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import serviceAccount from "./ecoops-360-9a241-firebase-adminsdk-fbsvc-5904977128.json" assert { type: "json" };
+import admin from "firebase-admin";
+
+// Parse the JSON string from environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+export { admin };
+
 
 // ---- Initialize Firebase ----
 initializeApp({
@@ -32,7 +44,7 @@ async function updateCarbonData() {
     try {
       const response = await fetch(
         `https://api.electricitymap.org/v3/carbon-intensity/latest?zone=${code}`,
-        { headers: { "auth-token": "50nZmfUw4EItQ1F9HUzP" } }
+        { headers: { "auth-token": ElectricityAPIKey } }
       );
 
       if (!response.ok) {
