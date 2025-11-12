@@ -1687,7 +1687,7 @@ const observer = new IntersectionObserver(
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     console.log("🔄 Updating Firestore...");
-    const res = await fetch("/api/update-carbon");
+    const res = await fetch("/api/server/update-carbon");
     if (!res.ok) throw new Error(`Update API failed: ${res.status}`);
     console.log("✅ Firestore update successful");
   } catch (err) {
