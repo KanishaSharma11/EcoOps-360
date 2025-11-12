@@ -1685,7 +1685,7 @@ const observer = new IntersectionObserver(
 );
 // 🔁 Load everything on page load
 document.addEventListener("DOMContentLoaded", async () => {
-  await fetch("/api/server/api/update-carbon"); // ✅ Always updates Firestore
+  await fetch("/api/update-carbon""); // ✅ Always updates Firestore
   await fetchCarbonData();
   await updateRegion();
 
