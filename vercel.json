@@ -7,7 +7,7 @@
     { "src": "public/**/*", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "^/api/update-carbon$", "dest": "api/server.js" },
+    { "src": "^/api/server/api/update-carbon$", "dest": "api/server.js" },
     { "src": "^/api/gemini$", "dest": "api/server2.js" },
     { "src": "^/api/firebase-config$", "dest": "api/firebase-config.js" },
     { "src": "/", "dest": "/public/index.html" },
